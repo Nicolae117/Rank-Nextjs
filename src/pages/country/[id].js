@@ -12,20 +12,58 @@ const getCountry = async (id) => {
 
 const Country = ({ country }) => {
   const [borders, setBorders] = useState([]);
+  const [currenttime, setCurrenttime] = useState("");
 
   const getBorders = async () => {
     const borders = await Promise.all(
       country.borders.map((border) => getCountry(border))
     );
-
     setBorders(borders);
   };
+
+  const getOffset = (str) =>{
+    const removedutc = str.slice(3,9);
+    const basicarr = removedutc.split(":");      
+    const basic_offset_first_arr = basicarr[0].split("");
+
+    const offset_pre = basic_offset_first_arr[0];
+    const offset_basic_val = basic_offset_first_arr[1] + basic_offset_first_arr[2];
+
+    const offset_num_val = + Number(offset_basic_val) + ( Number(basicarr[1]) / 60 );        
+    const offset = offset_pre + offset_num_val;
+    calcTime(offset);
+  }
+
+  function calcTime(offset) {            
+    // create Date object for current location
+    var d = new Date();
+
+    // convert to msec
+    // subtract local time zone offset
+    // get UTC time in msec
+    var utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+
+    // create new Date object for different city
+    // using supplied offset
+    var nd = new Date(utc + (3600000*offset));
+
+    // return time as a string
+    var ctime = nd.toLocaleString();
+    setCurrenttime(ctime)
+    console.log(ctime);
+}
+
+
+
 
   useEffect(() => {
     getBorders();
   }, []);
 
-  console.log(borders);
+  useEffect(() => {
+    getOffset(country.timezones[0]);
+  });
+
 
   return (
     <Layout title={country.name}>
@@ -85,8 +123,12 @@ const Country = ({ country }) => {
             </div>
 
             <div className={styles.details_panel_row}>
-              <div className={styles.details_panel_label}>Gini</div>
-              <div className={styles.details_panel_value}>{country.gini} %</div>
+              <div className={styles.details_panel_label}>Time-Zone</div>
+              <div className={styles.timerow}>
+                <div className={styles.details_panel_value}>{country.timezones[0]}</div>
+                <div className={styles.details_panel_value}>{currenttime} </div>
+              </div>
+              
             </div>
 
             <div className={styles.details_panel_borders}>

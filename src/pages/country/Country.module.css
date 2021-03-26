@@ -91,6 +91,10 @@
   gap: 24px;
 }
 
+.timerow{
+  
+}
+
 @media screen and (min-width: 720px) {
   .container {
     display: grid;

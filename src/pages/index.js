@@ -22,24 +22,28 @@ export default function Home({ countries }) {
   };
 
   return (
-    <Layout>
-      <div className={styles.inputContainer}>
-        <div className={styles.counts}>Found {countries.length} countries</div>
+    <>
+      
+      <Layout>
+        <div className={styles.inputContainer}>
+          <div className={styles.counts}>Found {countries.length} countries</div>
 
-        <div className={styles.input}>
-          <SearchInput
-            placeholder="Filter by Name, Region or SubRegion"
-            onChange={onInputChange}
-          />
+          <div className={styles.input}>
+            <SearchInput
+              placeholder="Filter by Name, Region or SubRegion"
+              onChange={onInputChange}
+            />
+          </div>
         </div>
-      </div>
-
-      <CountriesTable countries={filteredCountries} />
-    </Layout>
+        <CountriesTable countries={filteredCountries} />
+      </Layout>
+    </>
+    
   );
 } 
 
 export const getStaticProps = async () => {
+
   const res = await fetch("https://restcountries.eu/rest/v2/all");
   const countries = await res.json();
 
